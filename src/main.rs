@@ -1,4 +1,11 @@
+use crate::app::App;
 use colored::{ColoredString, Colorize};
+use ratatui::{DefaultTerminal, Frame};
+
+
+pub mod app;
+pub mod event;
+pub mod ui;
 
 pub struct Cell {
     number: u8, // Number of the cell
@@ -339,10 +346,29 @@ fn backtracking_solver(sudoku: &mut Sudoku, row: usize, column: usize, iter: &mu
     return sudoku.check();
 }
 
+
+fn app(terminal: &mut DefaultTerminal) -> std::io::Result<()> {
+    loop {
+        terminal.draw(render)?;
+        if crossterm::event::read()?.is_key_press() {
+            break Ok(());
+        }
+    }
+}
+
+fn render(frame: &mut Frame) {
+    frame.render_widget("hello world", frame.area());
+}
+
 fn main() {
     let mut sudoku = Sudoku::new();
     let mut iteration: u16 = 0;
     let locked_num: Vec<[usize; 3]> = vec![[0, 1, 1], [1, 7, 1], [8, 8, 1], [4, 1, 7]];
+
+    let terminal = ratatui::init();
+    let result = App::new().run(terminal);
+    ratatui::restore();
+    result;
 
     for num_obj in locked_num {
         sudoku.set_number(num_obj[0], num_obj[1], num_obj[2].try_into().unwrap());
