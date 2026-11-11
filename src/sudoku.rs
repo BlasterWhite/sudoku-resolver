@@ -1,5 +1,6 @@
 use colored::{ColoredString, Colorize};
 
+
 pub struct Cell {
     number: u8, // Number of the cell
     is_editable: bool,
@@ -337,27 +338,4 @@ pub fn backtracking_solver(sudoku: &mut Sudoku, row: usize, column: usize, iter:
     }
 
     return sudoku.check();
-}
-
-fn main() {
-    let mut sudoku = Sudoku::new();
-    let mut iteration: u16 = 0;
-    let locked_num: Vec<[usize; 3]> = vec![[0, 1, 1], [1, 7, 1], [8, 8, 1], [4, 1, 7]];
-
-    for num_obj in locked_num {
-        sudoku.set_number(num_obj[0], num_obj[1], num_obj[2].try_into().unwrap());
-        sudoku.set_editable(num_obj[0], num_obj[1], false);
-    }
-
-    println!("Grille de base:\n");
-    sudoku.display();
-
-    backtracking_solver(&mut sudoku, 0, 0, &mut iteration);
-
-    if sudoku.check() {
-        println!("Solution trouvé en {} itérations:\n", iteration);
-        sudoku.display();
-    } else {
-        println!("Aucune solutions trouvée");
-    }
 }
